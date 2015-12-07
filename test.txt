@@ -1,0 +1,5 @@
+total 12
+drwxrwxr-x 3 pserg pserg 4096 дек.   7 20:08 .
+drwxrwxr-x 7 pserg pserg 4096 дек.   7 19:53 ..
+drwxrwxr-x 7 pserg pserg 4096 дек.   7 19:56 .git
+-rw-rw-r-- 1 pserg pserg    0 дек.   7 20:08 test.txt
