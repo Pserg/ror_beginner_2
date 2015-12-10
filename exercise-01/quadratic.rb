@@ -18,7 +18,7 @@ elsif d == 0
   x = (-b + Math.sqrt(d)) / 2*a
   puts "Уравнение имеет один корень, x1 = #{x}"
 else
-  x1 = (-b + Math.sqrt(d)) / 2*a
-  x2 = (-b - Math.sqrt(d)) / 2*a
+  x1 = (-b + Math.sqrt(d)) / (2*a)
+  x2 = (-b - Math.sqrt(d)) / (2*a)
   puts "Уравнение имеет два корня, x1 = #{x1}, x2 = #{x2}"
 end
