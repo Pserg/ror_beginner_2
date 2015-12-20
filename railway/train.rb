@@ -1,9 +1,12 @@
 class Train
 
-  def initialize (train_type,wagons_amount)
-    @train_type = train_type
+  def initialize (wagons_amount)
     @wagons_amount = wagons_amount
     @speed = 0
+  end
+
+  def train_stopped?
+    @speed == 0
   end
 
   def increase_speed
@@ -11,7 +14,7 @@ class Train
   end
 
   def decrease_speed
-    @speed -= 5 if @speed != 0
+    @speed -= 5 unless train_stopped?
   end
 
   def current_speed
@@ -19,21 +22,21 @@ class Train
   end
 
   def wagons_amount
-    puts "Количество вагонов поезда #{self.object_id} - #{@wagons_amount}"
+    @wagons_amount
   end
 
-  def add_wagon
-    if @speed == 0
+  def add_wagon(wagon)
+    if train_stopped? && type == wagon.type
       @wagons_amount += 1
       puts "К поезду #{self.object_id} добавлен вагон"
     else
-      puts 'Невозможно добавить вагоны к движущемуся поезду'
+      puts 'Невозможно добавить вагоны к движущемуся поезду или тип вагона не соответствует типу поезда'
     end
 
   end
 
   def remove_wagon
-    if @speed == 0 && @wagons_amount > 0
+    if train_stopped? && @wagons_amount > 0
       @wagons_amount -= 1
       puts "От поезда #{self.object_id} отцеплен вагон"
     else

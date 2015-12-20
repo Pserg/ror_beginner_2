@@ -18,9 +18,9 @@ class RailwayStation
 
   def list_trains_by_type
     puts "Список пассажирских поездов на станции #{@name}:   "
-    @trains.each {|train| print "\nПоезд №#{train.object_id}." if train.type == 'passenger'}
+    @trains.each {|train| print "\nПоезд №#{train.object_id}." if train.type == :passenger}
     puts "Список грузовых поездов на станции #{@name}:   "
-    @trains.each {|train| print "\nПоезд №#{train.object_id}." if train.type == 'cargo'}
+    @trains.each {|train| print "\nПоезд №#{train.object_id}." if train.type == :cargo}
   end
 
   def send_train(train)
