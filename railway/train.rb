@@ -54,11 +54,24 @@ class Train
   end
 
   def list_route
-    (@current_station - 1 < 0) ? previous_station = '' : previous_station = @route[@current_station - 1].name
-    (@current_station >= @route.size - 1) ? next_station = '' : next_station = @route[@current_station+1].name
-    puts "Маршрут поезда #{self.object_id}: предыдущая станция - #{previous_station},
-      текущая станция - #{@route[@current_station].name},
-      следующая станция - #{next_station}"
+
+    puts "Маршрут поезда #{self.object_id}:
+          предыдущая станция - #{self.previous_station}, текущая станция - #{self.current_station}, следующая станция - #{self.next_station}"
   end
+
+  protected
+
+  def current_station
+    @route[@current_station].name
+  end
+
+  def previous_station
+    (@current_station - 1 < 0) ? previous_station = '' : previous_station = @route[@current_station - 1].name
+  end
+
+  def next_station
+    (@current_station >= @route.size - 1) ? next_station = '' : next_station = @route[@current_station+1].name
+  end
+
 
 end
