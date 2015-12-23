@@ -1,8 +1,32 @@
 class Train
+  include Manufacturer
+
+  @@trains = []
+
+  class << self
+    def all
+      @@trains
+    end
+
+    def find(number)
+      find_train = nil
+      @@trains.each do |train|
+        find_train = train if train.object_id == number
+      end
+
+      if find_train
+        find_train
+      else
+        nil
+      end
+    end
+
+  end
 
   def initialize (wagons_amount)
     @wagons_amount = wagons_amount
     @speed = 0
+    @@trains << self
   end
 
   def train_stopped?
@@ -56,7 +80,7 @@ class Train
   def list_route
 
     puts "Маршрут поезда #{self.object_id}:
-          предыдущая станция - #{self.previous_station}, текущая станция - #{self.current_station}, следующая станция - #{self.next_station}"
+          предыдущая станция - #{previous_station}, текущая станция - #{current_station}, следующая станция - #{next_station}"
   end
 
   protected

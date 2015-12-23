@@ -1,10 +1,17 @@
 class RailwayStation
 
+  @@stations = []
+
   attr_accessor :name
+
+  def self.all
+    @@stations
+  end
 
   def initialize (name)
     @name = name
     @trains = []
+    @@stations << self
   end
 
   def accept_train (train)
