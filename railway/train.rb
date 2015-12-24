@@ -1,7 +1,7 @@
 class Train
   include Manufacturer
 
-  @@trains = []
+  @@trains = {}
 
   class << self
     def all
@@ -9,24 +9,15 @@ class Train
     end
 
     def find(number)
-      find_train = nil
-      @@trains.each do |train|
-        find_train = train if train.object_id == number
-      end
+      return @@trains[number] if @@trains.has_key?(number)
 
-      if find_train
-        find_train
-      else
-        nil
-      end
     end
-
-  end
+end
 
   def initialize (wagons_amount)
     @wagons_amount = wagons_amount
     @speed = 0
-    @@trains << self
+    @@trains[self.object_id] = self
   end
 
   def train_stopped?

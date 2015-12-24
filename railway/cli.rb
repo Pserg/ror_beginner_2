@@ -60,7 +60,7 @@ class Cli
   def list
     puts 'Заданы следующие поезда и станции:'
     puts 'Поезда: '
-    Train.all.each_with_index { |train, index| puts "Индекс поезда - #{index}, номер поезда - #{train.object_id}, тип поезда - #{train.type},  количество вагонов - #{train.wagons_amount}"}
+    Train.all.each { |number,train| puts "Номер поезда - #{number}, тип поезда - #{train.type},  количество вагонов - #{train.wagons_amount}"}
     list_stations
     puts
   end
@@ -101,10 +101,10 @@ class Cli
   end
 
   def move_train_to_station
-    puts 'Задайте через запятую индекс поезда и индекс станции '
-    train_index, station_index = gets.split(',')
+    puts 'Задайте через запятую номер поезда и индекс станции '
+    train_number, station_index = gets.split(',')
     station = RailwayStation.all[station_index.to_i]
-    train = Train.all[train_index.to_i]
+    train = Train.all[train_number.to_i]
     station.accept_train(train)
   end
 
