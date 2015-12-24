@@ -9,7 +9,7 @@ class Train
     end
 
     def find(number)
-      return @@trains[number] if @@trains.has_key?(number)
+      @@trains[number]
 
     end
 end
