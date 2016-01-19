@@ -21,8 +21,8 @@ end
     @number = number
     @wagons_amount = wagons_amount
     @speed = 0
-    @@trains[self.object_id] = self
     validate!
+    @@trains[self.object_id] = self
   end
 
   def train_stopped?
