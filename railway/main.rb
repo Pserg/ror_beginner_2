@@ -11,7 +11,7 @@ require_relative('cargo_wagon')
 require_relative('cli')
 
 user_interface = Cli.new
-user_interface.start
+#user_interface.start
 
 
 

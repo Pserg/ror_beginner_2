@@ -10,14 +10,19 @@ class Train
 
     def find(number)
       @@trains[number]
-
     end
 end
 
-  def initialize (wagons_amount)
+  attr_reader :wagons_amount, :number
+
+  TRAIN_NUMBER_FORMAT = /^([a-z]|\d){3}-?([a-z]|\d){2}$/i
+
+  def initialize (number, wagons_amount)
+    @number = number
     @wagons_amount = wagons_amount
     @speed = 0
     @@trains[self.object_id] = self
+    validate!
   end
 
   def train_stopped?
@@ -36,16 +41,12 @@ end
     puts "Текущая скорость поезда #{self.object_id} - #{@speed} "
   end
 
-  def wagons_amount
-    @wagons_amount
-  end
-
   def add_wagon(wagon)
     if train_stopped? && type == wagon.type
       @wagons_amount += 1
       puts "К поезду #{self.object_id} добавлен вагон"
     else
-      puts 'Невозможно добавить вагоны к движущемуся поезду или тип вагона не соответствует типу поезда'
+      raise ArgumentError, 'Невозможно добавить вагоны к движущемуся поезду или тип вагона не соответствует типу поезда'
     end
 
   end
@@ -55,13 +56,15 @@ end
       @wagons_amount -= 1
       puts "От поезда #{self.object_id} отцеплен вагон"
     else
-      puts 'Операция невозможна. Поезд движется, либо у поезда больше нет вагонов'
+      Raise ArgumentError, 'Операция невозможна. Поезд движется, либо у поезда больше нет вагонов'
     end
   end
 
   def add_route (route)
+    raise ArgumentError, 'Ошибка. Невозможно добавить маршрут, проверьте тип маршрута' if route.class != Route
     @route = route.route
     @current_station = 0
+
   end
 
   def move_next_station
@@ -74,7 +77,15 @@ end
           предыдущая станция - #{previous_station}, текущая станция - #{current_station}, следующая станция - #{next_station}"
   end
 
+  def valid?
+    validate!
+  rescue
+    false
+  end
+
   protected
+
+  attr_writer :wagons_amount
 
   def current_station
     @route[@current_station].name
@@ -87,6 +98,15 @@ end
   def next_station
     (@current_station >= @route.size - 1) ? next_station = '' : next_station = @route[@current_station+1].name
   end
+
+  def validate!
+    raise ArgumentError, 'Wagons amount must be positive integer' if wagons_amount < 0 || wagons_amount.integer? == false
+    raise ArgumentError, 'Invalid train number' if number !~ TRAIN_NUMBER_FORMAT
+    raise ArgumentError, 'An number already exist' if Train.find(number)
+    true
+  end
+
+
 
 
 end

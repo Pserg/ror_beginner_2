@@ -9,12 +9,14 @@ class RailwayStation
   end
 
   def initialize (name)
+    validate!
     @name = name
     @trains = []
     @@stations << self
   end
 
   def accept_train (train)
+    raise ArgumentError, 'Ошибка. Передан неверный параметр в качестве аргумента' if train.class.superclass != Train
     @trains << train
   end
 
@@ -31,8 +33,22 @@ class RailwayStation
   end
 
   def send_train(train)
+    raise ArgumentError, 'Ошибка. Передан неверный параметр в качестве аргумента' if train.class.superclass != Train
     @trains.delete(train)
     puts "Поезд №#{train.object_id} отправился со станции #{@name}"
+  end
+
+  def valid?
+    validate!
+  rescue
+    false
+  end
+
+  private
+
+  def validate!
+    raise ArgumentError, 'Ошибка в названии станции.' if name.length < 2 && name.length > 30
+    true
   end
 
 end

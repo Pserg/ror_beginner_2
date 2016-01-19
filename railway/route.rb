@@ -2,6 +2,7 @@ class Route
   attr_accessor :route
   def initialize (start_station,end_station)
     @route = [start_station,end_station]
+    validate!
   end
 
   def add_station(station)
@@ -18,5 +19,18 @@ class Route
     puts 'Список станций маршрута: '
     @route.each {|station| print "#{station.name} -> "}
   end
+
+  def valid?
+    validate!
+  rescue
+    false
+  end
+
+  private
+
+  def validate!
+    raise ArgumentError, 'Передан неверный формат станции в виде параметра' if route[0].class != RailwayStation || route[1] != RailwayStation
+  end
+
 
 end

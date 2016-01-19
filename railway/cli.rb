@@ -22,10 +22,9 @@ class Cli
     loop do
       puts 'Введтие команду: '
       input = gets.chomp
-
       case input
         when 'exit'
-          exit
+          abort('Goodbye!')
         when 'help'
           puts help
         when 'list'
@@ -53,6 +52,11 @@ class Cli
       end
 
     end
+
+  rescue ArgumentError => e
+    puts e
+    retry
+
   end
 
   protected
@@ -72,15 +76,17 @@ class Cli
   end
 
   def create_passenger_train
-    puts 'Задайте количество вагонов'
+    puts 'Задайте номер поезда и количество вагонов'
+    number = gets.chomp
     wagons = gets.to_i
-    PassengerTrain.new(wagons)
+    PassengerTrain.new(number,wagons)
   end
 
   def create_cargo_train
-    puts 'Задайте количество вагонов'
+    puts 'Задайте номер поезда и количество вагонов'
+    number = gets.chomp
     wagons = gets.to_i
-    CargoTrain.new(wagons)
+    CargoTrain.new(number,wagons)
   end
 
   def add_wagon_to_train
