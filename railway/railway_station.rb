@@ -2,7 +2,7 @@ class RailwayStation
 
   @@stations = []
 
-  attr_accessor :name
+  attr_reader :name, :trains
 
   def self.all
     @@stations
@@ -22,14 +22,18 @@ class RailwayStation
 
   def list_trains
     puts "Список поездов на станции #{@name}:   "
-    @trains.each {|train| print "\nПоезд №#{train.object_id}."}
+    @trains.each {|train| print "\nПоезд №#{train.number}."}
   end
 
   def list_trains_by_type
     puts "Список пассажирских поездов на станции #{@name}:   "
-    @trains.each {|train| print "\nПоезд №#{train.object_id}." if train.type == :passenger}
+    @trains.each {|train| print "\nПоезд №#{train.number}." if train.type == :passenger}
     puts "Список грузовых поездов на станции #{@name}:   "
-    @trains.each {|train| print "\nПоезд №#{train.object_id}." if train.type == :cargo}
+    @trains.each {|train| print "\nПоезд №#{train.number}." if train.type == :cargo}
+  end
+
+  def list_trains_full_format
+
   end
 
   def send_train(train)
@@ -44,7 +48,13 @@ class RailwayStation
     false
   end
 
+  def act_trains(code)
+    trains.each {|train| code.call(train) }
+  end
+
   private
+
+  attr_writer :trains
 
   def validate!
     raise ArgumentError, 'Ошибка в названии станции.' if name.length < 2 && name.length > 30

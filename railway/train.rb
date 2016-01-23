@@ -13,7 +13,7 @@ class Train
     end
 end
 
-  attr_reader :wagons_amount, :number
+  attr_reader :wagons_amount, :number, :wagons
 
   TRAIN_NUMBER_FORMAT = /^([a-z]|\d){3}-?([a-z]|\d){2}$/i
 
@@ -22,7 +22,9 @@ end
     @wagons_amount = wagons_amount
     @speed = 0
     validate!
-    @@trains[self.object_id] = self
+    @@trains[number] = self
+    @wagons = []
+
   end
 
   def train_stopped?
@@ -42,22 +44,13 @@ end
   end
 
   def add_wagon(wagon)
-    if train_stopped? && type == wagon.type
-      @wagons_amount += 1
-      puts "К поезду #{self.object_id} добавлен вагон"
-    else
-      raise ArgumentError, 'Невозможно добавить вагоны к движущемуся поезду или тип вагона не соответствует типу поезда'
-    end
-
+    raise ArgumentError, 'Невозможно добавить вагоны к движущемуся поезду или тип вагона не соответствует типу поезда' if train_stopped? == false || type != wagon.type
+    @wagons << wagon
   end
 
   def remove_wagon
-    if train_stopped? && @wagons_amount > 0
-      @wagons_amount -= 1
-      puts "От поезда #{self.object_id} отцеплен вагон"
-    else
-      Raise ArgumentError, 'Операция невозможна. Поезд движется, либо у поезда больше нет вагонов'
-    end
+    Raise ArgumentError, 'Операция невозможна. Поезд движется, либо у поезда больше нет вагонов' if train_stopped? || @wagons.count == 0
+    @wagons.delete_at(-1)
   end
 
   def add_route (route)
@@ -83,9 +76,22 @@ end
     false
   end
 
+  def act_wagons(code)
+    raise ArgumentError, 'Ошибка. У поезда нет вагонов' if wagons.count == 0
+    wagons.each{|wagon| code.call(wagon)}
+  end
+
+  def list_wagons
+    wagons.each_with_index { |wagon,number| puts "Вагон №#{number}, #{wagon.full_info}" }
+  end
+
+  def info
+    "Поезд №#{number}, тип - #{type}, количество вагонов - #{wagons.count}"
+  end
+
   protected
 
-  attr_writer :wagons_amount
+  attr_writer :wagons_amount, :wagons
 
   def current_station
     @route[@current_station].name

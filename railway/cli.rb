@@ -12,8 +12,12 @@ class Cli
         rwft (remove wagon from train) - отцепить вагон от поезда,
         mvts (move train to station) - переместить поезд на станцию,
         ls (list stations) - вывести список всех станций,
-        lts (list trains on stations) - вывести список поездов на стации
-        ft (find train) - найти поезд по номеру'
+        lts (list trains on stations) - вывести список поездов на стации,
+        ls_all - Вывести поезда на всех станциях,
+        ft (find train) - найти поезд по номеру,
+        ls_w (list wagons) - вывести вагоны у поезда,
+        tp (take place) - занять место в вагона/загрузить вагон,
+        '
 
     puts help
   end
@@ -47,6 +51,12 @@ class Cli
           list_trains_on_station
         when 'ft'
           find_train
+        when 'ls_all'
+          list_trains_on_all_stations
+        when 'ls_w'
+          list_wagons
+        when 'tp'
+          take_place
         else
           puts 'Вы не задали ни одной допустимой команды или ошиблись при вводе'
       end
@@ -64,7 +74,7 @@ class Cli
   def list
     puts 'Заданы следующие поезда и станции:'
     puts 'Поезда: '
-    Train.all.each { |number,train| puts "Номер поезда - #{number}, тип поезда - #{train.type},  количество вагонов - #{train.wagons_amount}"}
+    Train.all.each { |index,train| puts "Номер поезда - #{train.number}, тип поезда - #{train.type},  количество вагонов - #{train.wagons.count}"}
     list_stations
     puts
   end
@@ -110,7 +120,7 @@ class Cli
     puts 'Задайте через запятую номер поезда и индекс станции '
     train_number, station_index = gets.split(',')
     station = RailwayStation.all[station_index.to_i]
-    train = Train.all[train_number.to_i]
+    train = Train.all[train_number]
     station.accept_train(train)
   end
 
@@ -136,5 +146,43 @@ class Cli
     end
   end
 
+  def list_trains_on_all_stations
+    RailwayStation.all.each do |station|
+      puts station.name
+      station.trains.each do |train|
+       puts train.info
+      end
+    end
+  end
+
+  def list_wagons
+    puts 'Введите номер поезда в формате 111-aa'
+    train_number = gets.chomp
+    is_train_number!(train_number)
+    puts Train.all[train_number].list_wagons
+  end
+
+  def take_place
+    puts 'Задайте номер поезда'
+    train_number = gets.chomp
+    is_train_number!(train_number)
+    train = Train.find(train_number)
+    puts train.list_wagons
+    puts 'Введите номер вагона'
+    wagon_number = gets.chomp.to_i
+    if train.type == :passenger
+      train.wagons[wagon_number].take_place
+      puts 'Место в вагоне успешно занято'
+    else
+      puts 'Задайте количество объема'
+      volume = gets.chomp.to_i
+      train.wagons[wagon_number].take_volume(volume)
+      puts 'Объем вагона успешно занят'
+    end
+  end
+
+  def is_train_number!(train_number)
+    raise ArgumentError 'Поезд с таким номером не найден' if Train.all[train_number] == nil
+  end
 
 end
