@@ -25,48 +25,27 @@ class Cli
   def start
     loop do
       puts 'Введтие команду: '
-      input = gets.chomp
-      case input
-        when 'exit'
-          abort('Goodbye!')
-        when 'help'
-          puts help
-        when 'list'
-          list
-        when 'cs'
-          create_station
-        when 'cpt'
-          create_passenger_train
-        when 'cct'
-          create_cargo_train
-        when 'awtt'
-          add_wagon_to_train
-        when 'rwft'
-          remove_wagon_from_train
-        when 'mvts'
-          move_train_to_station
-        when 'ls'
-          list_stations
-        when 'lts'
-          list_trains_on_station
-        when 'ft'
-          find_train
-        when 'ls_all'
-          list_trains_on_all_stations
-        when 'ls_w'
-          list_wagons
-        when 'tp'
-          take_place
-        else
-          puts 'Вы не задали ни одной допустимой команды или ошиблись при вводе'
-      end
+      input = gets.chomp.to_sym
 
+      actions = { exit: -> { abort 'Good bye!' }, help: -> { puts help },
+                  list: -> { list }, cs: -> { create_station },
+                  cpt: -> { create_passenger_train },
+                  cct: -> { create_cargo_train }, awtt: -> { add_wagon_to_train },
+                  rwfr: -> { remove_wagon_from_train }, mvts: -> { move_train_to_station },
+                  ls: -> { list_stations }, lts: -> { list_trains_on_station },
+                  fr: -> { find_train }, ls_all: -> { list_trains_on_all_stations },
+                  ls_w: -> { list_wagons }, tp: -> { take_place } }
+
+      if actions.key?(input)
+        actions[input].call
+      else
+        puts 'Вы не задали ни одной допустимой команды или ошиблись при вводе'
+      end
     end
 
   rescue ArgumentError => e
     puts e
     retry
-
   end
 
   protected
@@ -74,7 +53,7 @@ class Cli
   def list
     puts 'Заданы следующие поезда и станции:'
     puts 'Поезда: '
-    Train.all.each { |index,train| puts "Номер поезда - #{train.number}, тип поезда - #{train.type},  количество вагонов - #{train.wagons.count}"}
+    Train.all.each { |_index, train| puts "Номер поезда - #{train.number}, тип поезда - #{train.type},  количество вагонов - #{train.wagons.count}" }
     list_stations
     puts
   end
@@ -89,14 +68,14 @@ class Cli
     puts 'Задайте номер поезда и количество вагонов'
     number = gets.chomp
     wagons = gets.to_i
-    PassengerTrain.new(number,wagons)
+    PassengerTrain.new(number, wagons)
   end
 
   def create_cargo_train
     puts 'Задайте номер поезда и количество вагонов'
     number = gets.chomp
     wagons = gets.to_i
-    CargoTrain.new(number,wagons)
+    CargoTrain.new(number, wagons)
   end
 
   def add_wagon_to_train
@@ -126,7 +105,7 @@ class Cli
 
   def list_stations
     puts 'Станции:'
-    RailwayStation.all.each_with_index {|station, index| print "Индекс: #{index}, #{station.name}. " }
+    RailwayStation.all.each_with_index { |station, index| print "Индекс: #{index}, #{station.name}. " }
   end
 
   def list_trains_on_station
@@ -150,7 +129,7 @@ class Cli
     RailwayStation.all.each do |station|
       puts station.name
       station.trains.each do |train|
-       puts train.info
+        puts train.info
       end
     end
   end
@@ -182,7 +161,6 @@ class Cli
   end
 
   def is_train_number!(train_number)
-    raise ArgumentError 'Поезд с таким номером не найден' if Train.all[train_number] == nil
+    fail ArgumentError 'Поезд с таким номером не найден' if Train.all[train_number].nil?
   end
-
 end

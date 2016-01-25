@@ -1,10 +1,9 @@
 class CargoWagon < Wagon
-
   MAX_VOLUME = 1000
 
   attr_reader :volume, :start_volume
 
-  def initialize(volume=MAX_VOLUME)
+  def initialize(volume = MAX_VOLUME)
     @start_volume = volume
     @volume = volume
     validate!
@@ -16,7 +15,8 @@ class CargoWagon < Wagon
 
   def take_volume(take_volume)
     valid_volume(take_volume)
-    raise ArgumentError, 'Ошибка. Объем вагона будет переполнен' if @volume - take_volume < 0
+    error_msg = 'Ошибка. Объем вагона будет переполнен'
+    fail ArgumentError, error_msg if @volume - take_volume < 0
     @volume -= take_volume
   end
 
@@ -35,19 +35,21 @@ class CargoWagon < Wagon
   end
 
   def full_info
-      "тип вагона - грузовой, занятый объем - #{busy_volume}, свободный объем - #{free_volume}"
-    end
+    "тип вагона - грузовой, занятый объем - #{busy_volume},
+     свободный объем - #{free_volume}"
+  end
 
   private
+
   attr_writer :volume
 
   def valid_volume(volume)
-    raise ArgumentError, 'Ошибка. Неверный аргумент объема грузового вагона' if volume.class != Fixnum || volume < 0 || volume > MAX_VOLUME
+    error_msg = 'Ошибка. Неверный аргумент объема грузового вагона'
+    fail ArgumentError, error_msg if volume.class != Fixnum || volume < 0 || volume > MAX_VOLUME
   end
 
   def validate!
     valid_volume(@volume)
     true
   end
-
 end

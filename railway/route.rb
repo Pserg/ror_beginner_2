@@ -1,12 +1,12 @@
 class Route
   attr_accessor :route
-  def initialize (start_station,end_station)
-    @route = [start_station,end_station]
+  def initialize(start_station, end_station)
+    @route = [start_station, end_station]
     validate!
   end
 
   def add_station(station)
-    @route.insert(-2,station)
+    @route.insert(-2, station)
     puts "Станция #{station.name} добавлена в маршрут"
   end
 
@@ -17,7 +17,7 @@ class Route
 
   def list_route
     puts 'Список станций маршрута: '
-    @route.each {|station| print "#{station.name} -> "}
+    @route.each { |station| print "#{station.name} -> " }
   end
 
   def valid?
@@ -29,8 +29,7 @@ class Route
   private
 
   def validate!
-    raise ArgumentError, 'Передан неверный формат станции в виде параметра' if route[0].class != RailwayStation || route[1] != RailwayStation
+    error_msg = 'Error. Incorrect format of the station as a parameter'
+    fail ArgumentError, error_msg if route[0].class != RailwayStation || route[1] != RailwayStation
   end
-
-
 end

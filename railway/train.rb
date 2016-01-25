@@ -17,14 +17,13 @@ end
 
   TRAIN_NUMBER_FORMAT = /^([a-z]|\d){3}-?([a-z]|\d){2}$/i
 
-  def initialize (number, wagons_amount)
+  def initialize(number, wagons_amount)
     @number = number
     @wagons_amount = wagons_amount
     @speed = 0
     validate!
     @@trains[number] = self
     @wagons = []
-
   end
 
   def train_stopped?
@@ -40,24 +39,27 @@ end
   end
 
   def current_speed
-    puts "Текущая скорость поезда #{self.object_id} - #{@speed} "
+    puts "Текущая скорость поезда #{object_id} - #{@speed} "
   end
 
   def add_wagon(wagon)
-    raise ArgumentError, 'Невозможно добавить вагоны к движущемуся поезду или тип вагона не соответствует типу поезда' if train_stopped? == false || type != wagon.type
+    error_msg = 'Невозможно добавить вагоны к движущемуся поезду
+                 или тип вагона не соответствует типу поезда'
+    fail ArgumentError, error_msg if train_stopped? == false || type != wagon.type
     @wagons << wagon
   end
 
   def remove_wagon
-    Raise ArgumentError, 'Операция невозможна. Поезд движется, либо у поезда больше нет вагонов' if train_stopped? || @wagons.count == 0
+    error_msg = 'Операция невозможна. Поезд движется, либо у поезда больше нет вагонов'
+    Raise ArgumentError, error_msg if train_stopped? || @wagons.count == 0
     @wagons.delete_at(-1)
   end
 
-  def add_route (route)
-    raise ArgumentError, 'Ошибка. Невозможно добавить маршрут, проверьте тип маршрута' if route.class != Route
+  def add_route(route)
+    error_msg = 'Ошибка. Невозможно добавить маршрут, проверьте тип маршрута'
+    fail ArgumentError, error_msg if route.class != Route
     @route = route.route
     @current_station = 0
-
   end
 
   def move_next_station
@@ -65,9 +67,10 @@ end
   end
 
   def list_route
-
-    puts "Маршрут поезда #{self.object_id}:
-          предыдущая станция - #{previous_station}, текущая станция - #{current_station}, следующая станция - #{next_station}"
+    puts "Маршрут поезда #{object_id}:
+          предыдущая станция - #{previous_station},
+          текущая станция - #{current_station},
+          следующая станция - #{next_station}"
   end
 
   def valid?
@@ -77,12 +80,12 @@ end
   end
 
   def act_wagons(code)
-    raise ArgumentError, 'Ошибка. У поезда нет вагонов' if wagons.count == 0
-    wagons.each{|wagon| code.call(wagon)}
+    fail ArgumentError, 'Ошибка. У поезда нет вагонов' if wagons.count == 0
+    wagons.each { |wagon| code.call(wagon) }
   end
 
   def list_wagons
-    wagons.each_with_index { |wagon,number| puts "Вагон №#{number}, #{wagon.full_info}" }
+    wagons.each_with_index { |wagon, number| puts "Вагон №#{number}, #{wagon.full_info}" }
   end
 
   def info
@@ -102,17 +105,14 @@ end
   end
 
   def next_station
-    (@current_station >= @route.size - 1) ? next_station = '' : next_station = @route[@current_station+1].name
+    (@current_station >= @route.size - 1) ? next_station = '' : next_station = @route[@current_station + 1].name
   end
 
   def validate!
-    raise ArgumentError, 'Wagons amount must be positive integer' if wagons_amount < 0 || wagons_amount.integer? == false
-    raise ArgumentError, 'Invalid train number' if number !~ TRAIN_NUMBER_FORMAT
-    raise ArgumentError, 'An number already exist' if Train.find(number)
+    error_msg = 'Wagons amount must be positive integer'
+    fail ArgumentError, error_msg unless wagons_amount > 0 || wagons_amount.integer?
+    fail ArgumentError, 'Invalid train number' if number !~ TRAIN_NUMBER_FORMAT
+    fail ArgumentError, 'An number already exist' if Train.find(number)
     true
   end
-
-
-
-
 end

@@ -5,7 +5,4 @@ class Wagon
   def initialize
     register_instance
   end
-
-
-
 end
