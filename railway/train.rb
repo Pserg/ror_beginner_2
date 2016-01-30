@@ -1,6 +1,9 @@
 class Train
   include Manufacturer
 
+  TRAIN_NUMBER_FORMAT = /^([a-z]|\d){3}-?([a-z]|\d){2}$/i
+  MAX_WAGONS_AMOUNT = 100
+
   @@trains = {}
 
   class << self
@@ -15,7 +18,13 @@ end
 
   attr_reader :wagons_amount, :number, :wagons
 
-  TRAIN_NUMBER_FORMAT = /^([a-z]|\d){3}-?([a-z]|\d){2}$/i
+  include Validation
+
+  validate :number, :presence
+  validate :number, :format, TRAIN_NUMBER_FORMAT
+  validate :wagons_amount, :presence
+  validate :wagons_amount, :max_size, MAX_WAGONS_AMOUNT
+
 
   def initialize(number, wagons_amount)
     @number = number
@@ -73,12 +82,6 @@ end
           следующая станция - #{next_station}"
   end
 
-  def valid?
-    validate!
-  rescue
-    false
-  end
-
   def act_wagons(code)
     fail ArgumentError, 'Ошибка. У поезда нет вагонов' if wagons.count == 0
     wagons.each { |wagon| code.call(wagon) }
@@ -108,11 +111,4 @@ end
     (@current_station >= @route.size - 1) ? next_station = '' : next_station = @route[@current_station + 1].name
   end
 
-  def validate!
-    error_msg = 'Wagons amount must be positive integer'
-    fail ArgumentError, error_msg unless wagons_amount > 0 || wagons_amount.integer?
-    fail ArgumentError, 'Invalid train number' if number !~ TRAIN_NUMBER_FORMAT
-    fail ArgumentError, 'An number already exist' if Train.find(number)
-    true
-  end
 end

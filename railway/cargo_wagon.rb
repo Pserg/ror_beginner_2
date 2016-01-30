@@ -1,7 +1,13 @@
 class CargoWagon < Wagon
+  include Validation
+
   MAX_VOLUME = 1000
 
   attr_reader :volume, :start_volume
+
+  validate :start_volume, :presence
+  validate :start_volume, :format, /^\d{0,4}$/i
+  validate :start_volume, :max_size, MAX_VOLUME
 
   def initialize(volume = MAX_VOLUME)
     @start_volume = volume
@@ -28,12 +34,6 @@ class CargoWagon < Wagon
     volume
   end
 
-  def valid?
-    validate!
-  rescue
-    false
-  end
-
   def full_info
     "тип вагона - грузовой, занятый объем - #{busy_volume},
      свободный объем - #{free_volume}"
@@ -48,8 +48,4 @@ class CargoWagon < Wagon
     fail ArgumentError, error_msg if volume.class != Fixnum || volume < 0 || volume > MAX_VOLUME
   end
 
-  def validate!
-    valid_volume(@volume)
-    true
-  end
 end

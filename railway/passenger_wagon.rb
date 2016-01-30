@@ -1,13 +1,19 @@
 class PassengerWagon < Wagon
+  include Validation
+
   MAX_SEATS = 54
 
   attr_reader :number_of_seats, :seats
 
+  validate :number_of_seats, :presence
+  validate :number_of_seats, :format, /^\d{0,2}$/i
+  validate :number_of_seats, :max_size, MAX_SEATS
+
   def initialize(number_of_seats = MAX_SEATS)
     @number_of_seats = number_of_seats
-    validate!
     @seats = {}
     number_of_seats.times { |seat_number| @seats[(seat_number + 1)] = 0 }
+    validate!
   end
 
   def type
@@ -33,20 +39,7 @@ class PassengerWagon < Wagon
     количество свободных мест - #{free_places}"
   end
 
-  def validate?
-    validate!
-  rescue
-    false
-  end
-
   private
-
-  def validate!
-    error_msg = 'Ошибка аргумента. Количество мест должно быть
-                 целым положительным числом не превышающим 54.'
-    fail ArgumentError, error_msg if number_of_seats.class != Fixnum && number_of_seats > 0 && number_of_seats <= MAX_SEATS
-    true
-  end
 
   attr_writer :number_of_seats, :seats
 end

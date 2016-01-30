@@ -1,7 +1,14 @@
 class RailwayStation
+  include Validation
+
+  STATION_NAME_FORMAT = /^[a-z]{2,10}-?[a-z]{2,10}|\d/i
+
   @@stations = []
 
   attr_reader :name, :trains
+
+  validate :name, :presence
+  validate :name, :format, STATION_NAME_FORMAT
 
   def self.all
     @@stations
@@ -39,12 +46,6 @@ class RailwayStation
     puts "Поезд №#{train.object_id} отправился со станции #{@name}"
   end
 
-  def valid?
-    validate!
-  rescue
-    false
-  end
-
   def act_trains(code)
     trains.each { |train| code.call(train) }
   end
@@ -53,9 +54,4 @@ class RailwayStation
 
   attr_writer :trains
 
-  def validate!
-    error_msg = 'Ошибка в названии станции.'
-    fail ArgumentError, error_msg if name.length < 2 && name.length > 30
-    true
-  end
 end

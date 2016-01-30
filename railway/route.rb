@@ -1,7 +1,18 @@
 class Route
+  include Validation
+
   attr_accessor :route
+  attr_reader :start_station, :end_station
+
+  validate :start_station, :presence
+  validate :end_station, :presence
+  validate :start_station, :type, RailwayStation
+  validate :end_station, :type, RailwayStation
+
   def initialize(start_station, end_station)
-    @route = [start_station, end_station]
+    @start_station = start_station
+    @end_station = end_station
+    @route = [@start_station, @end_station]
     validate!
   end
 
@@ -20,16 +31,4 @@ class Route
     @route.each { |station| print "#{station.name} -> " }
   end
 
-  def valid?
-    validate!
-  rescue
-    false
-  end
-
-  private
-
-  def validate!
-    error_msg = 'Error. Incorrect format of the station as a parameter'
-    fail ArgumentError, error_msg if route[0].class != RailwayStation || route[1] != RailwayStation
-  end
 end
